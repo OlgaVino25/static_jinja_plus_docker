@@ -1,0 +1,10 @@
+﻿FROM python:3.12-slim
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends ca-certificates && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+ADD https://github.com/MrDave/StaticJinjaPlus/archive/main.tar.gz /tmp/sjp.tar.gz
+RUN tar -xzf /tmp/sjp.tar.gz -C /opt && mv /opt/StaticJinjaPlus-main /StaticJinjaPlus && rm /tmp/sjp.tar.gz
+WORKDIR /StaticJinjaPlus
+RUN python -m venv venv && ./venv/bin/pip install --no-cache-dir -r requirements.txt
+ENTRYPOINT ["/StaticJinjaPlus/venv/bin/python", "/StaticJinjaPlus/main.py"]
+CMD ["--help"]
